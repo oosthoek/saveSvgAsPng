@@ -24,6 +24,7 @@
         left = images.length,
         checkDone = function() {
           if (left === 0) {
+            console.log("bye, bye")
             callback();
           }
         };
@@ -38,28 +39,44 @@
             return;
           }
         }
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var img = new Image();
+
         href = href || image.getAttribute('href');
-        if (href) {
-          img.src = href;
-          img.onload = function() {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            image.setAttributeNS("http://www.w3.org/1999/xlink", "href", canvas.toDataURL('image/png'));
-            left--;
-            checkDone();
-          }
-          img.onerror = function() {
-            console.log("Could not load "+href);
-            left--;
-            checkDone();
-          }
-        } else {
+        //check if current image is same as prev
+        if (inlineImages.prevImage != undefined && href == inlineImages.prevImage.href ) {
+          console.log("passed check")
+          image.setAttributeNS("http://www.w3.org/1999/xlink", "href", inlineImages.prevImage.value);
           left--;
           checkDone();
+        }
+   
+        else {
+          console.log("this better show up only once")
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          var img = new Image();
+          if (href) {
+            img.crossOrigin = "anonymous"
+            img.src = href;
+            img.onload = function() {
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx.drawImage(img, 0, 0);
+
+              inlineImages.prevImage = {href:href, value: canvas.toDataURL('image/png')};
+
+              image.setAttributeNS("http://www.w3.org/1999/xlink", "href", inlineImages.prevImage.value);
+              left--;
+              checkDone();
+            }
+            img.onerror = function() {
+              console.log("Could not load "+href);
+              left--;
+              checkDone();
+            }
+          } else {
+            left--;
+            checkDone();
+          }
         }
       })(images[i]);
     }
@@ -127,8 +144,11 @@
     return decodeURIComponent(data);
   }
 
+
   out$.svgAsDataUri = function(el, options, cb) {
     requireDomNode(el);
+
+    console.log("in svgAsDataUri")
 
     options = options || {};
     options.scale = options.scale || 1;
@@ -182,9 +202,7 @@
 
       var fos = clone.querySelectorAll('foreignObject > *');
       for (var i = 0; i < fos.length; i++) {
-        if (!fos[i].getAttributeNS('xml', 'xmlns')) {
-          fos[i].setAttributeNS(xmlns, "xmlns", "http://www.w3.org/1999/xhtml");
-        }
+        fos[i].setAttributeNS(xmlns, "xmlns", "http://www.w3.org/1999/xhtml");
       }
 
       outer.appendChild(clone);
@@ -233,12 +251,8 @@
         }
         cb(png);
       }
-      image.onerror = function() {
-        console.error(
-          'There was an error loading the data URI as an image on the following SVG\n',
-          window.atob(uri.slice(26)), '\n',
-          "Open the following link to see browser's diagnosis\n",
-          uri);
+      image.onerror = function(error) {
+        console.error('There was an error loading the data URI as an image', error);
       }
       image.src = uri;
     });
