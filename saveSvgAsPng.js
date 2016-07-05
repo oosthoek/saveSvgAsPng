@@ -24,7 +24,6 @@
         left = images.length,
         checkDone = function() {
           if (left === 0) {
-            console.log("bye, bye")
             callback();
           }
         };
@@ -43,14 +42,12 @@
         href = href || image.getAttribute('href');
         //check if current image is same as prev
         if (inlineImages.prevImage != undefined && href == inlineImages.prevImage.href ) {
-          console.log("passed check")
           image.setAttributeNS("http://www.w3.org/1999/xlink", "href", inlineImages.prevImage.value);
           left--;
           checkDone();
         }
    
         else {
-          console.log("this better show up only once")
           var canvas = document.createElement('canvas');
           var ctx = canvas.getContext('2d');
           var img = new Image();
@@ -147,8 +144,6 @@
 
   out$.svgAsDataUri = function(el, options, cb) {
     requireDomNode(el);
-
-    console.log("in svgAsDataUri")
 
     options = options || {};
     options.scale = options.scale || 1;
