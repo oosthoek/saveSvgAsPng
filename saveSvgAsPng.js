@@ -53,7 +53,7 @@
           var img = new Image();
           if (href) {
             img.crossOrigin = "anonymous"
-            img.src = "https://collabrify-backend.appspot.com/proxy?url=" + href;
+            img.src = href;
             img.onload = function() {
               canvas.width = img.width;
               canvas.height = img.height;
