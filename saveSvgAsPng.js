@@ -59,7 +59,7 @@
               canvas.height = img.height;
               ctx.drawImage(img, 0, 0);
 
-              inlineImages.prevImage = {href:href, value: canvas.toDataURL('image/png')};
+              inlineImages.prevImage = {href:href, value: canvas.toDataURL('image/jpeg', .3)};
 
               image.setAttributeNS("http://www.w3.org/1999/xlink", "href", inlineImages.prevImage.value);
               left--;
@@ -218,7 +218,7 @@
     });
   }
 
-  out$.svgAsPngUri = function(el, options, cb) {
+  out$.svgAsJPEGUri = function(el, options, cb) {
     requireDomNode(el);
 
     out$.svgAsDataUri(el, options, function(uri) {
@@ -235,7 +235,7 @@
         context.drawImage(image, 0, 0);
         var a = document.createElement('a'), png;
         try {
-          png = canvas.toDataURL('image/png');
+          png = canvas.toDataURL('image/jpeg', .5);
         } catch (e) {
           if ((typeof SecurityError !== 'undefined' && e instanceof SecurityError) || e.name == "SecurityError") {
             console.error("Rendered SVG images cannot be downloaded in this browser.");
@@ -273,11 +273,11 @@
     });
   }
 
-  out$.saveSvgAsPng = function(el, name, options) {
+  out$.saveSvgAsJPEG = function(el, name, options) {
     requireDomNode(el);
 
     options = options || {};
-    out$.svgAsPngUri(el, options, function(uri) {
+    out$.svgAsJPEGUri(el, options, function(uri) {
       download(name, uri);
     });
   }
