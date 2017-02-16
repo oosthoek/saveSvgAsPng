@@ -52,8 +52,7 @@
           var ctx = canvas.getContext('2d');
           var img = new Image();
           if (href) {
-            img.crossOrigin = "anonymous"
-            img.src = href;
+            img.crossOrigin = "Anonymous";
             img.onload = function() {
               canvas.width = img.width;
               canvas.height = img.height;
@@ -70,6 +69,7 @@
               left--;
               checkDone();
             }
+            img.src = href;
           } else {
             left--;
             checkDone();
@@ -223,6 +223,7 @@
 
     out$.svgAsDataUri(el, options, function(uri) {
       var image = new Image();
+      image.crossOrigin = "Anonymous";
       image.onload = function() {
         var canvas = document.createElement('canvas');
         canvas.width = image.width;
