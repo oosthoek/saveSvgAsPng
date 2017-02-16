@@ -223,7 +223,7 @@
 
     out$.svgAsDataUri(el, options, function(uri) {
       var image = new Image();
-      image.crossOrigin = "Anonymous";
+      image.crossOrigin = null;
       image.onload = function() {
         var canvas = document.createElement('canvas');
         canvas.width = image.width;
